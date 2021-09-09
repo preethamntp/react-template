@@ -47,3 +47,42 @@
             }
         }
         " --open is used to open up the app automatically in the browser if the webpack compiles successfully
+
+## To work with css (As webpack doesn't know how to process .css)
+###### Since we need appropriate loader to handle this kind of file. Configure loader to process this file.
+        $ yarn add -D css-loader style-loader
+###### Once installed add them to "module rules" in webpack config
+         module: {
+                rules: [{
+                        test: /\.(ts|js)x?$/,
+                        exclude: /node_modules/,
+                        use: [{
+                        loader: "babel-loader"
+                        }]},
+                        {
+                        test: /\.css$/,
+                        use: ['style-loader', 'css-loader']
+                }]
+         },
+## Since we have several images and svgs in our app we have to congigure the webpack to incorporate them.
+###### in the src folder create a file declarations.d.ts
+        declare module '*.png';
+        declare module '*.svg';
+        declare module '*.ico';
+
+        "Here webpack throw an error"
+###### For image to load we need additional loaders like the file loader (in >webpack-4), but, in webpack 5 we have support for that out of the box through asset modules
+
+###### In webpack modules add new rule as follows in "modules.rules"
+
+        {
+                test:/\.(?:ico|gif|png|jpg|jpeg)$/i,
+                type:'asset/resource'
+        }
+
+###### To load .svg files we need to add one more rule as asset/inline in "modules.rules",
+###### it should be used for svg's and fonts
+        {
+                test:/\.(woff(2)?|eot|ttf|otf|svg|)$/
+                use:'asset/inline
+        }
